@@ -76,13 +76,7 @@ public class OctreeNode
     public void Draw()
     {
         Gizmos.color = new Color(0, 1, 0);
-        Gizmos.DrawWireCube(nodeBounds.center, nodeBounds.size);
-        //Gizmos.color = new Color(1, 0, 0);
-        //foreach(OctreeObject obj in containedObject)
-        //{
-        //    Gizmos.DrawCube(obj.bounds.center, obj.bounds.size);
-        //}
-        
+        Gizmos.DrawWireCube(nodeBounds.center, nodeBounds.size); 
         if(children != null)
         {
             for(int i = 0; i < 8; i++)
@@ -90,10 +84,6 @@ public class OctreeNode
                 if (children[i] != null)
                     children[i].Draw();
             }
-        }//else if(containedObject.Count != 0)
-        //{
-        //    Gizmos.color = new Color(0, 0, 1, 0.25f);
-        //    Gizmos.DrawCube(nodeBounds.center, nodeBounds.size);
-        //}
+        }
     }
 }

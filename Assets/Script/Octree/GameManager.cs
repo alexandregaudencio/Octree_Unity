@@ -2,17 +2,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CreateOctree : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     public GameObject[] worldObjects;
     public int nodeMinSize = 5;
     Octree ot;
     public float minX, maxX, minY, maxY, minZ, maxZ;
-
+    public float worldBoundary = 10;
+    public static GameManager instance;
     // Start is called before the first frame update
     void Start()
     {
-        
+        instance= this;
     }
 
     // Update is called once per frame

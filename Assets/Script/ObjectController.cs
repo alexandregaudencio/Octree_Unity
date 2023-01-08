@@ -33,7 +33,7 @@ public class ObjectController : MonoBehaviour
 
     private void OutsideBoundary(Vector3 targetPosition)
     {
-        Vector3 boundarySimulationVector = Vector3.one * GameManager.instance.worldBoundarySize;
+        Vector3 boundarySimulationVector = Vector3.one * GameManager.instance.worldSize;
         if (targetPosition.x + radius > boundarySimulationVector.x) direction.x *= -1;
         if (targetPosition.y + radius > boundarySimulationVector.y) direction.y *= -1;
         if (targetPosition.z + radius > boundarySimulationVector.z) direction.z *= -1;

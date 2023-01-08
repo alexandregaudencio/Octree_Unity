@@ -4,17 +4,14 @@ using System.Collections.Generic;
 using UnityEditor.SceneManagement;
 using UnityEngine;
 
+[Serializable]
 public class Octree
 {
     public OctreeNode rootNode;
-    public Bounds boundsD;
 
-    public Octree(GameObject[] worldObjects, float minNodeSize)
+    public Octree(GameObject[] worldObjects, float minNodeSize, Bounds worldBound)
     {
-        Bounds bounds = new Bounds();
-        bounds.Expand(20);
-        boundsD = bounds;
-        rootNode = new OctreeNode(bounds, minNodeSize);
+        rootNode = new OctreeNode(worldBound, minNodeSize);
         AddObjects(worldObjects);
     }
 

@@ -76,6 +76,7 @@ public class OctreeNode
     public void DrawBoundingBox()
     {
         Gizmos.color = new Color(0, 1, 0);
+        Gizmos.DrawWireCube(nodeBounds.center, nodeBounds.size);
         if(octreeNodeChild != null)
         {
             foreach (OctreeNode node in octreeNodeChild)

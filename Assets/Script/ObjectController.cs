@@ -27,9 +27,7 @@ public class ObjectController : MonoBehaviour
     {
         OutsideBoundary(transform.position);
         transform.position += direction * speed * Time.deltaTime;
-
     }
-
 
     private void OutsideBoundary(Vector3 targetPosition)
     {
@@ -42,9 +40,16 @@ public class ObjectController : MonoBehaviour
         if (targetPosition.z + -radius < -boundarySimulationVector.z) direction.z *= -1;
     }
 
-    public void ChangeDirection(Vector3 target)
+    private void ChangeDirection(Vector3 target)
     {
         direction = target;
     }
+
+    //Inverting object direction of motion on collision
+    public void Collide(Bounds objBound) {
+        Vector3  targetDirection =   Vector3.one * (objBound.center - bound.center).magnitude;
+        ChangeDirection(targetDirection);
+    }
+
 
 }

@@ -3,35 +3,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public struct OctreeObject
-{
-    public Bounds bounds;
-    public GameObject gameObject;
+//[Serializable]
+//public struct OctreeObject
+//{
+//    public Bounds bounds;
+//    public GameObject gameObject;
 
-    public OctreeObject(GameObject go)
-    {
-        bounds = go.GetComponent<Collider>().bounds;
-        gameObject = go;
-    }
-}
+//    public OctreeObject(GameObject go)
+//    {
+//        bounds = go.GetComponent<Collider>().bounds;
+//        gameObject = go;
+//    }
+//}
 
 [Serializable]
 public class OctreeNode 
 {
     Bounds nodeBounds;
     Bounds[] childBounds;
-    public OctreeNode[] children = null;
+    public OctreeNode[] octreeNodeChild;
     float minSize;
-    List<OctreeObject> containedObject = new List<OctreeObject>();
+    public List<ObjectController> objectControllers;
 
-    public OctreeNode(Bounds b, float minNodeSize)
+    public OctreeNode(Bounds octreeBounbs, float minNodeSize)
     {
-        nodeBounds = b;
+        objectControllers =   new List<ObjectController>();   
+        nodeBounds = octreeBounbs;
         minSize = minNodeSize;
 
         float quarter = nodeBounds.size.y / 4f;
-        float childLenght = nodeBounds.size.y / 2f;
-        Vector3 childSize = new Vector3(childLenght, childLenght, childLenght);
+
+        Vector3 childSize = Vector3.one* nodeBounds.size.y / 2f;
         childBounds = new Bounds[8];
         childBounds[0] = new Bounds(nodeBounds.center + new Vector3(-quarter, quarter, -quarter), childSize);
         childBounds[1] = new Bounds(nodeBounds.center + new Vector3(-quarter, quarter, quarter), childSize);
@@ -43,49 +45,67 @@ public class OctreeNode
         childBounds[7] = new Bounds(nodeBounds.center + new Vector3(quarter, -quarter, quarter), childSize);
     }
 
-    public void AddObject(GameObject go)
+    public void Subdivide(ObjectController go)
     {
-        DivideAndAdd(go);
-    }
-
-    public void DivideAndAdd(GameObject go)
-    {
-        OctreeObject octObj = new OctreeObject(go);
+        //verify  stop condition is done
         if (nodeBounds.size.y <= minSize)
         {
-            containedObject.Add(new OctreeObject(go));
+            objectControllers.Add(go);
             return;
         }
-        if(children == null)
-            children = new OctreeNode[8];
-        bool dividing = false;
+        if(octreeNodeChild == null) octreeNodeChild = new OctreeNode[8];
+        bool dividingOctreeNode = false;
+        
         for(int i = 0; i < 8; i++)
         {
-            if (children[i] == null)
-                children[i] = new OctreeNode(childBounds[i], minSize);
-            if (childBounds[i].Intersects(octObj.bounds))
+            if (octreeNodeChild[i] == null)
+                octreeNodeChild[i] = new OctreeNode(childBounds[i], minSize);
+            
+            if (childBounds[i].Intersects(go.bound))
             {
-                dividing = true;
-                children[i].DivideAndAdd(go);
+                dividingOctreeNode = true;
+                //sending ObjectController "go" to child when it is inside childBounds[i]
+                octreeNodeChild[i].Subdivide(go);
             }
         }
-        if(dividing == false)
+        if(dividingOctreeNode == false)
         {
-            containedObject.Add(octObj);
-            children = null;
+            //whenn not inside childs
+            objectControllers.Add(go);
+            octreeNodeChild = null;
         }
+        
     }
 
-    public void Draw()
+    //check all objects collisions at finished octreeNode subidivision
+    public void CheckCollisions() {
+        foreach (ObjectController objController in objectControllers)
+        {
+            foreach (ObjectController otherObjController in objectControllers)
+            {
+                if (otherObjController != objController) { 
+                    if (objController.bound.Intersects(otherObjController.bound))
+                    {
+                        Debug.Log(objController.bound.center +" contacts "+ otherObjController.bound.center);
+                        //objController.Collide(otherObjController.bound);
+                    }
+                }
+            }
+        }
+
+    }
+
+
+    public void DrawBoundingBox()
     {
         Gizmos.color = new Color(0, 1, 0);
         Gizmos.DrawWireCube(nodeBounds.center, nodeBounds.size); 
-        if(children != null)
+        if(octreeNodeChild != null)
         {
             for(int i = 0; i < 8; i++)
             {
-                if (children[i] != null)
-                    children[i].Draw();
+                if (octreeNodeChild[i] != null)
+                    octreeNodeChild[i].DrawBoundingBox();
             }
         }
     }

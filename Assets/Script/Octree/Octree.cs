@@ -8,18 +8,16 @@ using UnityEngine;
 public class Octree
 {
     public OctreeNode rootNode;
-
-    public Octree(GameObject[] worldObjects, float minNodeSize, Bounds worldBound)
+    public Octree(ObjectController[] worldObjects, float minNodeSize, Bounds worldBound)
     {
         rootNode = new OctreeNode(worldBound, minNodeSize);
-        AddObjects(worldObjects);
+        
+        foreach (ObjectController go in worldObjects)
+        {
+            rootNode.Subdivide(go);
+            rootNode.CheckCollisions();
+        }
+
     }
 
-    public void AddObjects(GameObject[] worldObjects)
-    {
-        foreach(GameObject go in worldObjects)
-        {
-            rootNode.AddObject(go);
-        }
-    }
 }

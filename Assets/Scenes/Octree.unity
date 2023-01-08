@@ -347,9 +347,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   objectPrefab: {fileID: 929298202805190505, guid: 91416c84f3cf2174981140da45138c65, type: 3}
   objCount: 5
-  nodeMinSize: 3
+  nodeMinSize: 5
   worldSize: 10
   worldBounds:
     m_Center: {x: 0, y: 0, z: 0}
     m_Extent: {x: 0, y: 0, z: 0}
   worldObjects: []
+  octree:
+    rootNode:
+      children: []

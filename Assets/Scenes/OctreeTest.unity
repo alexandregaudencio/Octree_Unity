@@ -252,7 +252,7 @@ Camera:
   m_GameObject: {fileID: 963194225}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -312,7 +312,7 @@ GameObject:
   - component: {fileID: 1753718075}
   - component: {fileID: 1753718076}
   m_Layer: 0
-  m_Name: Octree
+  m_Name: SimulationManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -345,14 +345,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb04daaebe9c67643aa5a2cfc7539077, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  simulationMode: 1
   objectPrefab: {fileID: 929298202805190505, guid: 91416c84f3cf2174981140da45138c65, type: 3}
-  objCount: 5
-  nodeMinSize: 5
-  worldSize: 10
+  spawnObjCount: 300
+  nodeMinSize: 3
+  worldSize: 50
   worldBounds:
     m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
-  worldObjects: []
+    m_Extent: {x: 2, y: 2, z: 2}
   octree:
     rootNode:
-      children: []
+      octreeNodeChild: []
+      objectControllers: []

@@ -10,7 +10,19 @@ public class ObjectController : MonoBehaviour
     private Vector3 direction;
     private SphereCollider sphereCollider;
     public Bounds bound => sphereCollider.bounds;
-    private float radius => sphereCollider.radius;
+    public float radius => sphereCollider.radius;
+    
+    public int ID { get => id; set => id = value; }
+
+    [SerializeField] private int id = -1;
+
+    public float RandomWorlPoint => Random.Range(
+        -SimulationManager.instance.WorldSize + bound.size.magnitude,
+        SimulationManager.instance.WorldSize - bound.size.magnitude
+     );
+
+
+    public Vector3 RandomWorldPosition => new Vector3(RandomWorlPoint, RandomWorlPoint, RandomWorlPoint);
 
     private void Awake()
     {
@@ -19,19 +31,22 @@ public class ObjectController : MonoBehaviour
     }
     private void Start()
     {
-        //randomize direction on start
+        //randomize movement on start
+        transform.position = RandomWorldPosition;
         direction = new Vector3(Random.Range(-1f, 1f), Random.Range(-1f, 1f), Random.Range(-1f, 1f));
-
     }
-    private void Update()
+
+    private void FixedUpdate()
     {
         OutsideBoundary(transform.position);
         transform.position += direction * speed * Time.deltaTime;
     }
 
+
+    //restrict object's movement to only world's bounding Box
     private void OutsideBoundary(Vector3 targetPosition)
     {
-        Vector3 boundarySimulationVector = Vector3.one * GameManager.instance.worldSize;
+        Vector3 boundarySimulationVector = Vector3.one * SimulationManager.instance.WorldSize;
         if (targetPosition.x + radius > boundarySimulationVector.x) direction.x *= -1;
         if (targetPosition.y + radius > boundarySimulationVector.y) direction.y *= -1;
         if (targetPosition.z + radius > boundarySimulationVector.z) direction.z *= -1;
@@ -40,15 +55,16 @@ public class ObjectController : MonoBehaviour
         if (targetPosition.z + -radius < -boundarySimulationVector.z) direction.z *= -1;
     }
 
-    private void ChangeDirection(Vector3 target)
+    private void SetDirection(Vector3 target)
     {
         direction = target;
     }
 
     //Inverting object direction of motion on collision
-    public void Collide(Bounds objBound) {
-        Vector3  targetDirection =   Vector3.one * (objBound.center - bound.center).magnitude;
-        ChangeDirection(targetDirection);
+    public void OnCollide(Bounds collisionBounds) {
+
+        Vector3  targetDirection =  -(collisionBounds.center - bound.center);
+        SetDirection(targetDirection);
     }
 
 

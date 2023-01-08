@@ -1,5 +1,7 @@
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
+using System.Diagnostics;
 using UnityEngine;
 
 public enum SimulationMode
@@ -48,12 +50,21 @@ public class SimulationManager : MonoBehaviour
         worldBounds.extents = Vector3.one*worldSize;
         if(simulationMode == SimulationMode.BRUTE_FORCE)
         {
+            Stopwatch stopwatch = new Stopwatch();
+
+            stopwatch.Start();
             CollisionManager.ProcessCollision(worldObjects, worldObjects);
+            stopwatch.Stop();
+            UnityEngine.Debug.Log(stopwatch.Elapsed.TotalMilliseconds.ToString());
         }
         //octree update each 
         else if (simulationMode == SimulationMode.OCTREE)
         {
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
             octree = new Octree(worldObjects, nodeMinSize, worldBounds);
+            stopwatch.Stop();
+            UnityEngine.Debug.Log(stopwatch.Elapsed.TotalMilliseconds.ToString());
 
         }
 
@@ -65,6 +76,7 @@ public class SimulationManager : MonoBehaviour
         Gizmos.color = new Color(0, 1, 0);
         Gizmos.DrawWireCube(worldBounds.center, worldBounds.center);
         octree.rootNode.DrawBoundingBox();
+        
 
     }
 
